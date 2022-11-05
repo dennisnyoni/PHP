@@ -1,0 +1,32 @@
+{
+    "name": "movies",
+    "version": "1.0.0",
+    "description": "database name: movies\r collection: marshal_art",
+    "main": "app.js",
+    "scripts": {
+        "start": "nodemon start",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dennisnyoni/PHP.git"
+    },
+    "keywords": [
+        "express",
+        "node",
+        "mongodb",
+        "mongoose",
+        "fullstack"
+    ],
+    "author": "Dennis Nyoni",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/dennisnyoni/PHP/issues"
+    },
+    "homepage": "https://github.com/dennisnyoni/PHP#readme",
+    "dependencies": {
+        "dotenv": "^16.0.3",
+        "express": "^4.18.2",
+        "mongoose": "^6.7.1"
+    }
+}
