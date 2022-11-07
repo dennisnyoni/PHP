@@ -1,9 +1,10 @@
 {
     "name": "movies",
     "version": "1.0.0",
-    "description": "database name: movies\r collection: marshal_art",
+    "description": "",
     "main": "app.js",
     "scripts": {
+        "dev": "nodemon --inspect",
         "start": "nodemon start",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -12,11 +13,14 @@
         "url": "git+https://github.com/dennisnyoni/PHP.git"
     },
     "keywords": [
+        "nodejs",
         "express",
-        "node",
+        "mean",
+        "stack",
         "mongodb",
         "mongoose",
-        "fullstack"
+        "angular",
+        "collection"
     ],
     "author": "Dennis Nyoni",
     "license": "ISC",
