@@ -11,7 +11,14 @@ router
     .route("/movies/:movieId")
     .get(movieController.getOne)
     .put(movieController.fullUpdateOne)
-    //.patch(movieController.partialUpdateOne)
+    .patch(movieController.partialUpdateOne)
     .delete(movieController.deleteMovie);
+
+/*router
+    .route("/movies/:movieId/artists/:artistId")
+    .get(movieController.getOneArtists)
+    .put(movieController.fullUpdateOneArtists)
+    .patch(movieController.partialUpdateOneArtists)
+    .delete(movieController.deleteArtist);*/
 
 module.exports = router;

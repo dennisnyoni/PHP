@@ -14,14 +14,14 @@ mongoose.connection.on("error", function(err) {
 process.on("SIGINT", function() {
     mongoose.connection.close(function() {
         console.log(process.env.SIGINT_MESSAGE);
-        process.exit(process.ev.EXIT);
+        process.exit(0);
     });
 });
 
 process.on("SIGTERM", function() {
     mongoose.connection.close(function() {
         console.log(process.env.SIGTERM);
-        process.exit(process.ev.EXIT);
+        process.exit(0);
     });
 });
 
