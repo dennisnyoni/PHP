@@ -108,7 +108,7 @@ const deleteMovie = function(req, res) {
     });
 };
 
-const save = function ( response, updatedMovie){
+const save = function ( req,res,response, updatedMovie){
     updatedMovie.save(function(err, updatedMovie) {
         if (err) {
             response.status = 500;
@@ -131,7 +131,7 @@ const _partialUpdate = function(req, res, response, updatedMovie) {
         updatedMovie.marshalArt = req.body.marshalArt;
     //updatedMovie.artists = req.body.artists;
 
-    save(response, updatedMovie);
+    save(req,res,response, updatedMovie);
 }
 
 const _fullUpdate = function(req, res, response, updatedMovie) {
@@ -140,7 +140,7 @@ const _fullUpdate = function(req, res, response, updatedMovie) {
     updatedMovie.marshalArt = req.body.marshalArt;
     //updatedMovie.artists = req.body.artists;
 
-    save(response, updatedMovie);
+    save(req,res,response, updatedMovie);
 }
 
 const _update = function(req, res, updateCallback) {
