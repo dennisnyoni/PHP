@@ -1,3 +1,4 @@
+
 const { response } = require("express");
 const mongoose = require("mongoose");
 const Movie = require("../model/movieModel");
@@ -107,6 +108,20 @@ const deleteMovie = function(req, res) {
     });
 };
 
+const save = function ( response, updatedMovie){
+    updatedMovie.save(function(err, updatedMovie) {
+        if (err) {
+            response.status = 500;
+            response.message = err;
+            console.log(err);
+        } else {
+            response.status = 201;
+            response.message = updatedMovie;
+        }
+        res.status(response.status).json(response.message);
+    });
+}
+
 const _partialUpdate = function(req, res, response, updatedMovie) {
     if (req.body.title)
         updatedMovie.title = req.body.title;
@@ -116,17 +131,7 @@ const _partialUpdate = function(req, res, response, updatedMovie) {
         updatedMovie.marshalArt = req.body.marshalArt;
     //updatedMovie.artists = req.body.artists;
 
-    updatedMovie.save(function(err, updatedMovie) {
-        if (err) {
-            response.status = 500;
-            response.message = err;
-            console.log(err);
-        } else {
-            response.status = 201;
-            response.message = updatedMovie;
-        }
-        res.status(response.status).json(response.message);
-    });
+    save(response, updatedMovie);
 }
 
 const _fullUpdate = function(req, res, response, updatedMovie) {
@@ -135,23 +140,13 @@ const _fullUpdate = function(req, res, response, updatedMovie) {
     updatedMovie.marshalArt = req.body.marshalArt;
     //updatedMovie.artists = req.body.artists;
 
-    updatedMovie.save(function(err, updatedMovie) {
-        if (err) {
-            response.status = 500;
-            response.message = err;
-            console.log(err);
-        } else {
-            response.status = 201;
-            response.message = updatedMovie;
-        }
-        res.status(response.status).json(response.message);
-    });
+    save(response, updatedMovie);
 }
 
 const _update = function(req, res, updateCallback) {
     let response = {
-        status: 0,
-        message: 0
+        status: 204,
+        message: ""
     }
 
     console.log("Full update one");

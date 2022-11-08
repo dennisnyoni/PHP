@@ -15,6 +15,13 @@ router
     .delete(movieController.deleteMovie);
 
 /*router
+    .route("/movies/:movieId/artists")
+    .get(movieController.getOneArtists)
+    .put(movieController.fullUpdateOneArtists)
+    .patch(movieController.partialUpdateOneArtists)
+    .delete(movieController.deleteArtist);
+
+router
     .route("/movies/:movieId/artists/:artistId")
     .get(movieController.getOneArtists)
     .put(movieController.fullUpdateOneArtists)
