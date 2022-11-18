@@ -1,5 +1,6 @@
 const express = require("express");
 const movieController = require("../../src/controllers/movieController");
+const artistsController = require("../controllers/artistsController");
 const router = express.Router();
 
 router
@@ -12,20 +13,20 @@ router
     .get(movieController.getOne)
     .put(movieController.fullUpdateOne)
     .patch(movieController.partialUpdateOne)
+    .post(movieController.addOne)
     .delete(movieController.deleteMovie);
 
-/*router
+router
     .route("/movies/:movieId/artists")
-    .get(movieController.getOneArtists)
-    .put(movieController.fullUpdateOneArtists)
-    .patch(movieController.partialUpdateOneArtists)
-    .delete(movieController.deleteArtist);
+    .get(artistsController.getArtists)
+    .post(artistsController.addArtist);
 
 router
     .route("/movies/:movieId/artists/:artistId")
-    .get(movieController.getOneArtists)
-    .put(movieController.fullUpdateOneArtists)
-    .patch(movieController.partialUpdateOneArtists)
-    .delete(movieController.deleteArtist);*/
+    .get(artistsController.getOneArtist)
+    .delete(artistsController.deleteOneArtist);
+/*.p(movieController.fullUpdateOneArtists)
+.patch(movieController.partialUpdateOneArtists)
+.delete(movieController.deleteArtist);*/
 
 module.exports = router;

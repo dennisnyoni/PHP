@@ -1,6 +1,6 @@
-
-const { response } = require("express");
-const mongoose = require("mongoose");
+//const { body, validationResult } = require('express-validator');
+//const { response } = require("express");
+//const mongoose = require("mongoose");
 const Movie = require("../model/movieModel");
 
 //const movie = new Movie();
@@ -20,7 +20,7 @@ const getAll = function(req, res) {
         offset = parseInt(req.query.offset, 20);
     }
     if (req.query && req.query.count) {
-        offset = parseInt(req.query.count, 20);
+        count = parseInt(req.query.count, 20);
     }
 
     if (count > maxCount) {
@@ -33,15 +33,13 @@ const getAll = function(req, res) {
     Movie.find()
         .skip(offset)
         .limit(count)
-        .exec(function(err, movies) {
-            if (err) {
-                console.log("Error finding games");
-                res.status(process.env.INTERNAL_ERROR_STATUS_CODE).json(err);
-            } else {
-                console.log("Found movies ", movies.length);
-                res.json(movies);
-            }
-        });
+        .then(movies=>{
+        console.log("Found movies ", movies.length);
+        res.status(process.env.OK_STATUS_CODE).json(movies);
+    }).catch(err=>{
+        console.log("Error finding games");
+        res.status(process.env.INTERNAL_ERROR_STATUS_CODE).json(err);
+    });
 };
 
 const addOne = function(req, res) {
@@ -52,73 +50,51 @@ const addOne = function(req, res) {
         marshalArt: req.body.marshalArt,
         artists: req.body.artists,
     };
-    Movie.create(newMovie, function(err, data) {
-        const response = { status: process.env.CREATED_STATUS_CODE, message: data };
-        if (err) {
-            console.log("Error creating movie");
-            response.status = process.env.INTERNAL_ERROR_STATUS_CODE;
-            response.message = err;
-        }
-        res.status(response.status).json(response.message);
+    //const response = { status: process.env.CREATED_STATUS_CODE, message: "data" };
+    Movie.create(newMovie).then(data=>{
+        res.status(parseInt(process.env.OK_STATUS_CODE)).json(data);
+    }).catch(err=>{
+        res.status(parseInt(process.env.BAD_REQUEST_STATUS_CODE)).json(err);
     });
 };
 
 const getOne = function(req, res) {
     console.log("GET One Movie Controller");
     const movieId = req.params.movieId;
-    Movie.findById(movieId).exec(function(err, data) {
-        const response = {
-            status: process.env.OK_STATUS_CODE,
-            message: data,
-        };
-        if (err) {
-            console.log("Error finding movie");
-            res.status(process.env.INTERNAL_ERROR_STATUS_CODE).json(err);
-        } else if (!data) {
-            console.log("Movie id not found");
-            res
-                .status(process.env.RESOURCE_NOT_FOUND_STATUS_CODE)
-                .json({ message: "Movie ID not found" });
-        } else {
-            console.log("Found movie ", data);
-            res.status(response.status).json(response.message);
+
+    Movie.findById(movieId).then(data=>{
+        if(!data){
+            res.status(process.env.RESOURCE_NOT_FOUND_STATUS_CODE).json(data);
+        }else{
+            res.status(process.env.OK_STATUS_CODE).json(data);
         }
+    }).catch(err=>{
+        res.status(process.env.BAD_REQUEST_STATUS_CODE).json(err);
     });
 };
 
 const deleteMovie = function(req, res) {
     const movieId = req.params.movieId;
-    Movie.findByIdAndDelete(movieId).exec(function(err, deletedMovie) {
-        const response = {
-            status: process.env.NO_CONTENT_STATUS_CODE,
-            message: deletedMovie,
-        };
-        if (err) {
-            console.log("Error finding movie to delete ");
-            response.status = process.env.INTERNAL_ERROR_STATUS_CODE;
-            response.message = err;
-        } else if (!deleteMovie) {
-            console.log("Movie not found");
-            response.status = process.env.RESOURCE_NOT_FOUND_STATUS_CODE;
-            response.message = {
-                message: "Movie with ID not found",
-            };
+    Movie.findByIdAndDelete(movieId).then(deleteMovie=>{
+        if(!deleteMovie){
+            res.status(process.env.RESOURCE_NOT_FOUND_STATUS_CODE).json({message:"Movie not found"});
+        }else{
+            res.status(process.env.OK_STATUS_CODE).json(deleteMovie);
         }
-        res.status(response.status).json(response.message);
+    }).catch(err=>{
+        res.status(process.env.BAD_REQUEST_STATUS_CODE).json(err);
     });
 };
-
-const save = function ( req,res,response, updatedMovie){
-    updatedMovie.save(function(err, updatedMovie) {
-        if (err) {
-            response.status = 500;
-            response.message = err;
-            console.log(err);
-        } else {
-            response.status = 201;
-            response.message = updatedMovie;
+//updating movie code
+const _save = function ( req,res,response, updatedMovie){
+    updatedMovie.save().then(updatedMovie=>{
+        if (!updatedMovie){
+            res.status(process.env.RESOURCE_NOT_FOUND_STATUS_CODE).json(updatedMovie);
+        }else{
+            res.status(process.env.OK_STATUS_CODE).json(updatedMovie);
         }
-        res.status(response.status).json(response.message);
+    }).catch(err=>{
+        res.status(process.env.BAD_REQUEST_STATUS_CODE).json(err);
     });
 }
 
@@ -130,36 +106,31 @@ const _partialUpdate = function(req, res, response, updatedMovie) {
     if (req.body.marshalArt)
         updatedMovie.marshalArt = req.body.marshalArt;
     //updatedMovie.artists = req.body.artists;
-
-    save(req,res,response, updatedMovie);
+    _save(req,res,response, updatedMovie);
 }
 
 const _fullUpdate = function(req, res, response, updatedMovie) {
     updatedMovie.title = req.body.title;
     updatedMovie.year = req.body.year;
     updatedMovie.marshalArt = req.body.marshalArt;
-    //updatedMovie.artists = req.body.artists;
-
-    save(req,res,response, updatedMovie);
+    _save(req,res,response, updatedMovie);
 }
-
+//seperate duplicate code. to be called locally
 const _update = function(req, res, updateCallback) {
     let response = {
         status: 204,
         message: ""
     }
-
     console.log("Full update one");
     let movieId = req.params.movieId;
-    Movie.findById(movieId).exec(function(err, updatedMovie) {
-        if (err) {
-            response.status = 500;
-            response.message = err;
-            console.log(err);
-        } else {
-            updateCallback(req, res, response, updatedMovie);
+    Movie.findById(movieId).then(updatedMovie=>{
+        if(!updatedMovie){
+            res.status(process.env.RESOURCE_NOT_FOUND_STATUS_CODE).json(updatedMovie);
+        }else{
+            res.status(process.env.OK_STATUS_CODE).json(updatedMovie);
         }
-
+    }).catch(err=>{
+        res.status(process.env.BAD_REQUEST_STATUS_CODE).json(err);
     });
 }
 
@@ -171,4 +142,4 @@ const fullUpdateOne = function(req, res) {
     _update(req, res, _fullUpdate);
 };
 
-module.exports = { getAll, getOne, addOne, deleteMovie, fullUpdateOne, partialUpdateOne };
+module.exports = { getAll, getOne, addOne, deleteMovie, fullUpdateOne, partialUpdateOne};//,addArtist };
