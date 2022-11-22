@@ -6,6 +6,8 @@
     "scripts": {
         "dev": "nodemon --inspect",
         "start": "nodemon start",
+        "start-backend": "nodemon --inspect",
+        "start-frontend": "cd ./public/movies-ui",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
