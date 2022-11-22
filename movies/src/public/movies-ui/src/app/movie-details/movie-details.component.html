@@ -1,0 +1,54 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h2>User Details</h2>
+  </div>
+  <div class="panel-body">
+    <div *ngIf="movie">
+      <table class="table table-striped">
+        <thead>
+
+        </thead>
+        <tbody>
+
+        <tr>
+          <td>
+            Id
+          </td>
+          <td>
+            {{movie.id}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Title
+          </td>
+          <td>
+            {{movie.title}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Year
+          </td>
+          <td>
+            {{movie.year}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Marshal Art
+          </td>
+          <td>
+            {{movie.marshalArt}}
+          </td>
+        </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<br>
+<br>
+<button (click)="list()" class="btn btn-primary">Back to Movies List</button><div>
+</div>
